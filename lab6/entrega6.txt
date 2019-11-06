@@ -1,0 +1,54 @@
+
+1. Building a ring
+Open Questions:
+	What are the pros and cons of a more frequent stabilizing procedure.
+		Pros: major consistencia del sistema.
+		Cons: poca escalabilitat.
+
+	Do we have to inform the new node about our decision?  How will it know if we have discarded its friendly proposal?
+		Informem al node en qüestió un cop s'executa un procés d'estabilització. Llavors, serà conscient de la seva posició en l'anell.
+
+	What would happen if we didn’t schedule the stabilize procedure?  Would things still work?
+		En principi funcionaria sense el stabilize scheluded sempre i quan no caigui un node previament actiu. Això es deu a que al afegir un node nou, cridem a stabilize, però això no ocurreix quan un d'aquest abandona l'anell. (REVISAR)
+
+2. Adding Store
+Open Questions:
+
+
+Experiments
+	Do some experiments to test the ring integrity, initially in one Erlang instance but then in a network of several instances.  When connecting nodes on different instances remember to start Erlang in distributed mode  (giving  a  -name  argument)  and  make  sure  that  you  use  the  same cookie (-setcookie).
+		ONE ERLANG INSTANCE: mirar captura test1 --> Sembla que tot OK!
+		MULTIPLE ERLANG INSTANCES: ---- TODO ----
+
+3. Handling Failures
+Open Questions:
+	What  will  happen  if  a  node  is  falsely  detected  of being dead (e.g.  it has only been temporally unavailable)?
+		Es desconnectarà del ring, com si hagués caigut de veritat: es fa un stabilize sense tenir en compte aquest node. Si es produeix un nou stabilize i el node contesta, aquest tornarà a formar part del ring.
+
+Experiments
+	Do some experiments to evaluate the behavior of your implementation when nodes can fail.
+		Donette.
+
+4. Replication
+
+Experiments
+	Do some experiments to demonstrate that your replication strategy works.  You can for instance execute the following commands, and check the contents of the Store and the Replica.
+		> N2 = node4:start(2).
+		> P = chordy:connect(N2).
+		> P ! {add,0,0}.
+		> P ! {add,1,1}.
+		> P ! {add,2,2}.
+		> N2 ! probe.
+		> N0 = node4:start(0,N2).
+		> N2 ! probe.
+		> N1 = node4:start(1,N2).
+		> N2 ! probe.
+		> N1 ! stop.
+		> N2 ! probe.
+		> N0 ! stop.
+		> N2 ! probe.
+	
+
+NOS HEMOS QUEDADO EN EL 2.5 NO INCLUIDO SIN PROBAR NADA DEL 2!
+Nos hemos quedado en el 3.3 faltan todos (y hay que compilar y debuggar)
+3.3 DONNETTE --> TODO: DEBUGGAR I COMPROVAR QUE NO FALLA 
